@@ -2163,16 +2163,18 @@ local EmbeddedModules = {
 				local explorerItems = create({
 					{1,"Folder",{Name="ExplorerItems",}},
 					{2,"Frame",{BackgroundColor3=Color3.new(0.20392157137394,0.20392157137394,0.20392157137394),BorderSizePixel=0,Name="ToolBar",Parent={1},Size=UDim2.new(1,0,0,22),}},
-					{3,"Frame",{BackgroundColor3=Color3.new(0.14901961386204,0.14901961386204,0.14901961386204),BorderColor3=Color3.new(0.1176470592618,0.1176470592618,0.1176470592618),BorderSizePixel=0,Name="SearchFrame",Parent={2},Position=UDim2.new(0,3,0,1),Size=UDim2.new(1,-6,0,18),}},
+					{3,"Frame",{BackgroundColor3=Color3.new(0.14901961386204,0.14901961386204,0.14901961386204),BorderColor3=Color3.new(0.1176470592618,0.1176470592618,0.1176470592618),BorderSizePixel=0,Name="SearchFrame",Parent={2},Position=UDim2.new(0,3,0,1),Size=UDim2.new(1,-52,0,18),}},
 					{4,"TextBox",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,ClearTextOnFocus=false,Font=3,Name="SearchBox",Parent={3},PlaceholderColor3=Color3.new(0.39215689897537,0.39215689897537,0.39215689897537),PlaceholderText="Search workspace",Position=UDim2.new(0,4,0,0),Size=UDim2.new(1,-24,0,18),Text="",TextColor3=Color3.new(1,1,1),TextSize=14,TextXAlignment=0,}},
 					{5,"UICorner",{CornerRadius=UDim.new(0,2),Parent={3},}},
 					{6,"UIStroke",{Thickness=1.4,Parent={3},Color=Color3.fromRGB(42,42,42)}},
 					{7,"TextButton",{AutoButtonColor=false,BackgroundColor3=Color3.new(0.12549020349979,0.12549020349979,0.12549020349979),BackgroundTransparency=1,BorderSizePixel=0,Font=3,Name="Reset",Parent={3},Position=UDim2.new(1,-17,0,1),Size=UDim2.new(0,16,0,16),Text="",TextColor3=Color3.new(1,1,1),TextSize=14,}},
 					{8,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image="rbxassetid://5034718129",ImageColor3=Color3.new(0.39215686917305,0.39215686917305,0.39215686917305),Parent={7},Size=UDim2.new(0,16,0,16),}},
-					{9,"TextButton",{AutoButtonColor=false,BackgroundColor3=Color3.new(0.12549020349979,0.12549020349979,0.12549020349979),BackgroundTransparency=1,BorderSizePixel=0,Font=3,Name="Refresh",Parent={2},Position=UDim2.new(1,-20,0,1),Size=UDim2.new(0,18,0,18),Text="",TextColor3=Color3.new(1,1,1),TextSize=14,Visible=false,}},
+					{9,"TextButton",{AutoButtonColor=false,BackgroundColor3=Color3.new(0.12549020349979,0.12549020349979,0.12549020349979),BackgroundTransparency=1,BorderSizePixel=0,Font=3,Name="Undo",Parent={2},Position=UDim2.new(1,-48,0,1),Size=UDim2.new(0,16,0,16),Text="",TextColor3=Color3.new(1,1,1),TextSize=14,}},
 					{10,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image="rbxassetid://5642310344",Parent={9},Position=UDim2.new(0,3,0,3),Size=UDim2.new(0,12,0,12),}},
-					{11,"Frame",{BackgroundColor3=Color3.new(0.15686275064945,0.15686275064945,0.15686275064945),BorderSizePixel=0,Name="ScrollCorner",Parent={1},Position=UDim2.new(1,-16,1,-16),Size=UDim2.new(0,16,0,16),Visible=false,}},
-					{12,"Frame",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,ClipsDescendants=true,Name="List",Parent={1},Position=UDim2.new(0,0,0,23),Size=UDim2.new(1,0,1,-23),}}
+					{11,"TextButton",{AutoButtonColor=false,BackgroundColor3=Color3.new(0.12549020349979,0.12549020349979,0.12549020349979),BackgroundTransparency=1,BorderSizePixel=0,Font=3,Name="Redo",Parent={2},Position=UDim2.new(1,-28,0,1),Size=UDim2.new(0,16,0,16),Text="",TextColor3=Color3.new(1,1,1),TextSize=14,}},
+					{12,"ImageLabel",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,Image="rbxassetid://5642310344",Parent={11},Position=UDim2.new(0,3,0,3),Size=UDim2.new(0,12,0,12),}},
+					{13,"Frame",{BackgroundColor3=Color3.new(0.15686275064945,0.15686275064945,0.15686275064945),BorderSizePixel=0,Name="ScrollCorner",Parent={1},Position=UDim2.new(1,-16,1,-16),Size=UDim2.new(0,16,0,16),Visible=false,}},
+					{14,"Frame",{BackgroundColor3=Color3.new(1,1,1),BackgroundTransparency=1,ClipsDescendants=true,Name="List",Parent={1},Position=UDim2.new(0,0,0,23),Size=UDim2.new(1,0,1,-23),}}
 				})
 
 				toolBar = explorerItems.ToolBar
@@ -2180,6 +2182,18 @@ local EmbeddedModules = {
 
 				Explorer.GuiElems.ToolBar = toolBar
 				Explorer.GuiElems.TreeFrame = treeFrame
+				Explorer.MiscIcons:DisplayByKey(explorerItems.Undo.ImageLabel, "Undo")
+				Explorer.MiscIcons:DisplayByKey(explorerItems.Redo.ImageLabel, "Redo")
+				explorerItems.Undo.MouseButton1Click:Connect(function()
+					local chs = service.ChangeHistoryService
+					if not chs then return end
+					pcall(chs.Undo, chs)
+				end)
+				explorerItems.Redo.MouseButton1Click:Connect(function()
+					local chs = service.ChangeHistoryService
+					if not chs then return end
+					pcall(chs.Redo, chs)
+				end)
 
 				scrollV = Lib.ScrollBar.new()		
 				scrollV.WheelIncrement = 3
@@ -11720,6 +11734,13 @@ DefaultSettings = (function()
 			GuiSelectionBox = true,
 			CopyPathUseGetChildren = true
 		},
+		Assistant = {
+			_Recurse = true,
+			Mode = "explorer",
+			LLMModel = "gpt-4.1-mini",
+			LLMEndpoint = "https://api.openai.com/v1/chat/completions",
+			LLMMaxContextChars = 14000
+		},
 		Properties = {
 			_Recurse = true,
 			MaxConflictCheck = 50,
@@ -12648,10 +12669,15 @@ Main = (function()
 		local function createExplorerAssistantWindow()
 			local window = Lib.Window.new()
 			window:SetTitle("Explorer Assistant")
-			window:Resize(470, 340)
+			window:Resize(540, 380)
 
 			local content = window.GuiElems.Content
 			local scriptSourceCache = setmetatable({}, {__mode = "k"})
+			local assistantMode = (Settings.Assistant and Settings.Assistant.Mode) or "explorer"
+			local llmModel = (Settings.Assistant and Settings.Assistant.LLMModel) or "gpt-4.1-mini"
+			local llmEndpoint = (Settings.Assistant and Settings.Assistant.LLMEndpoint) or "https://api.openai.com/v1/chat/completions"
+			local llmMaxContextChars = (Settings.Assistant and Settings.Assistant.LLMMaxContextChars) or 14000
+			local llmApiKey = ""
 			local trim = function(str)
 				return tostring(str or ""):match("^%s*(.-)%s*$")
 			end
@@ -12692,12 +12718,75 @@ Main = (function()
 				return false
 			end
 
+			local topBar = Instance.new("Frame")
+			topBar.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
+			topBar.BorderSizePixel = 0
+			topBar.Position = UDim2.new(0, 4, 0, 4)
+			topBar.Size = UDim2.new(1, -8, 0, 48)
+			topBar.Parent = content
+
+			local modeButton = Instance.new("TextButton")
+			modeButton.AutoButtonColor = false
+			modeButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+			modeButton.BorderSizePixel = 0
+			modeButton.Position = UDim2.new(0, 0, 0, 0)
+			modeButton.Size = UDim2.new(0, 145, 0, 22)
+			modeButton.TextColor3 = Color3.new(1, 1, 1)
+			modeButton.TextSize = 14
+			modeButton.Parent = topBar
+
+			local modelBox = Instance.new("TextBox")
+			modelBox.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+			modelBox.BorderSizePixel = 0
+			modelBox.ClearTextOnFocus = false
+			modelBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+			modelBox.PlaceholderText = "LLM model"
+			modelBox.Position = UDim2.new(0, 151, 0, 0)
+			modelBox.Size = UDim2.new(0, 162, 0, 22)
+			modelBox.Text = llmModel
+			modelBox.TextColor3 = Color3.new(1, 1, 1)
+			modelBox.TextSize = 14
+			modelBox.TextXAlignment = Enum.TextXAlignment.Left
+			modelBox.Parent = topBar
+			Lib.ViewportTextBox.convert(modelBox)
+
+			local apiKeyBox = Instance.new("TextBox")
+			apiKeyBox.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+			apiKeyBox.BorderSizePixel = 0
+			apiKeyBox.ClearTextOnFocus = false
+			apiKeyBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+			apiKeyBox.PlaceholderText = "API key (used in LLM mode)"
+			apiKeyBox.Position = UDim2.new(0, 0, 0, 26)
+			apiKeyBox.Size = UDim2.new(1, 0, 0, 22)
+			apiKeyBox.Text = ""
+			apiKeyBox.TextColor3 = Color3.new(1, 1, 1)
+			apiKeyBox.TextSize = 14
+			apiKeyBox.TextXAlignment = Enum.TextXAlignment.Left
+			apiKeyBox.Parent = topBar
+			Lib.ViewportTextBox.convert(apiKeyBox)
+
+			local apiKeyPadding = Instance.new("UIPadding")
+			apiKeyPadding.PaddingLeft = UDim.new(0, 6)
+			apiKeyPadding.PaddingRight = UDim.new(0, 6)
+			apiKeyPadding.Parent = apiKeyBox
+
+			local endpointButton = Instance.new("TextButton")
+			endpointButton.AutoButtonColor = false
+			endpointButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+			endpointButton.BorderSizePixel = 0
+			endpointButton.Position = UDim2.new(1, -112, 0, 0)
+			endpointButton.Size = UDim2.new(0, 112, 0, 22)
+			endpointButton.Text = "Edit Endpoint"
+			endpointButton.TextColor3 = Color3.new(1, 1, 1)
+			endpointButton.TextSize = 14
+			endpointButton.Parent = topBar
+
 			local chatFrame = Instance.new("ScrollingFrame")
 			chatFrame.Active = true
 			chatFrame.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
 			chatFrame.BorderSizePixel = 0
-			chatFrame.Position = UDim2.new(0, 4, 0, 4)
-			chatFrame.Size = UDim2.new(1, -8, 1, -58)
+			chatFrame.Position = UDim2.new(0, 4, 0, 56)
+			chatFrame.Size = UDim2.new(1, -8, 1, -110)
 			chatFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
 			chatFrame.ScrollBarThickness = 4
 			chatFrame.ScrollBarImageColor3 = Color3.new(0, 0, 0)
@@ -13375,6 +13464,102 @@ Main = (function()
 				return table.concat(lines, "\n")
 			end
 
+			local function buildLLMContext(message)
+				local lines = {
+					"You are Dex's LLM mode. Be concise and practical. If user asks to find something, suggest concrete Explorer queries.",
+					getSelectedSummary()
+				}
+
+				local scriptNode = getSelectedScriptNode()
+				if scriptNode and scriptNode.Obj then
+					local source = getScriptSource(scriptNode.Obj)
+					if source then
+						lines[#lines + 1] = ("Selected script path: %s"):format(Explorer.GetInstancePath(scriptNode.Obj))
+						lines[#lines + 1] = "Selected script snippet:\n" .. truncateText(source, 3200)
+					end
+				end
+
+				if message:find("find", 1, true) or message:find("search", 1, true) or message:find("where", 1, true) then
+					local hintTerms = extractNameTerms(message)
+					if #hintTerms > 0 then
+						local tipMatches = searchByName(hintTerms[1], function() return true end, 8)
+						if #tipMatches > 0 then
+							lines[#lines + 1] = "Explorer hint matches:\n" .. summarizeNodes(tipMatches)
+						end
+					end
+				end
+
+				local full = table.concat(lines, "\n\n")
+				if #full > llmMaxContextChars then
+					full = full:sub(1, llmMaxContextChars)
+				end
+				return full
+			end
+
+			local function extractLLMResponse(data)
+				if type(data) ~= "table" then return nil end
+				if data.choices and data.choices[1] and data.choices[1].message then
+					return data.choices[1].message.content
+				end
+				if data.output_text then
+					return data.output_text
+				end
+				if data.output and data.output[1] and data.output[1].content and data.output[1].content[1] then
+					return data.output[1].content[1].text
+				end
+			end
+
+			local function callLLM(userMessage)
+				if not env.request then
+					return nil, "Your executor does not expose HTTP request support."
+				end
+				llmApiKey = trim(apiKeyBox.Text)
+				if llmApiKey == "" then
+					return nil, "Set an API key in the assistant first."
+				end
+
+				llmModel = trim(modelBox.Text)
+				if llmModel == "" then llmModel = "gpt-4.1-mini" end
+
+				local payload = {
+					model = llmModel,
+					temperature = 0.2,
+					messages = {
+						{role = "system", content = buildLLMContext(lower(userMessage))},
+						{role = "user", content = userMessage}
+					}
+				}
+
+				local request = {
+					Url = llmEndpoint,
+					Method = "POST",
+					Headers = {
+						["Content-Type"] = "application/json",
+						["Authorization"] = "Bearer " .. llmApiKey
+					},
+					Body = service.HttpService:JSONEncode(payload)
+				}
+
+				local ok, response = pcall(env.request, request)
+				if not ok or type(response) ~= "table" then
+					return nil, "Request failed before receiving a response."
+				end
+				if not response.Success then
+					local body = truncateText(response.Body or "No response body.", 700)
+					return nil, ("LLM request failed (%s): %s"):format(tostring(response.StatusCode or "?"), body)
+				end
+
+				local decodedOk, decoded = pcall(service.HttpService.JSONDecode, service.HttpService, response.Body)
+				if not decodedOk then
+					return nil, "LLM response was not valid JSON."
+				end
+				local text = extractLLMResponse(decoded)
+				if type(text) ~= "string" or text == "" then
+					return nil, "LLM response was empty."
+				end
+				return trim(text)
+			end
+
 			local function isActionKeyword(text)
 				text = lower(trim(text))
 				local prefixes = {
@@ -13627,6 +13812,38 @@ Main = (function()
 					local lowered = lower(trim(part))
 					if lowered == "" then return end
 
+					if lowered:find("^/mode%s+") == 1 then
+						local requested = trim(lowered:gsub("^/mode%s+", ""))
+						if requested == "llm" or requested == "explorer" then
+							assistantMode = requested
+							if Settings.Assistant then
+								Settings.Assistant.Mode = assistantMode
+							end
+							modeButton.Text = ("Mode: %s"):format(assistantMode == "llm" and "LLM AI" or "Explorer AI")
+							addMessage("Dex", ("Mode switched to %s."):format(assistantMode == "llm" and "LLM AI" or "Explorer AI"), Color3.fromRGB(45, 45, 45))
+						else
+							addMessage("Dex", 'Use "/mode explorer" or "/mode llm".', Color3.fromRGB(45, 45, 45))
+						end
+						return
+					elseif lowered:find("^/endpoint%s+") == 1 then
+						llmEndpoint = trim(part:gsub("^/endpoint%s+", ""))
+						if Settings.Assistant then
+							Settings.Assistant.LLMEndpoint = llmEndpoint
+						end
+						addMessage("Dex", ("LLM endpoint set to: %s"):format(llmEndpoint), Color3.fromRGB(45, 45, 45))
+						return
+					end
+
+					if assistantMode == "llm" then
+						local response, err = callLLM(part)
+						if response then
+							addMessage("LLM", response, Color3.fromRGB(45, 45, 45))
+						else
+							addMessage("Dex", err or "LLM request failed.", Color3.fromRGB(45, 45, 45))
+						end
+						return
+					end
+
 					if lowered == "hi" or lowered == "hello" or lowered == "hey" or lowered == "yo" or lowered == "sup" or lowered == "what's up" or lowered == "whats up" then
 						addMessage("Dex", "Hi. I can search Explorer names, visible text, script source, and explain the currently selected script.", Color3.fromRGB(45, 45, 45))
 					elseif lowered == "thanks" or lowered == "thank you" or lowered == "ty" then
@@ -13669,6 +13886,32 @@ Main = (function()
 				end
 			end
 
+			local function refreshModeLabel()
+				modeButton.Text = ("Mode: %s"):format(assistantMode == "llm" and "LLM AI" or "Explorer AI")
+			end
+			refreshModeLabel()
+			modeButton.MouseButton1Click:Connect(function()
+				assistantMode = assistantMode == "llm" and "explorer" or "llm"
+				if Settings.Assistant then
+					Settings.Assistant.Mode = assistantMode
+				end
+				refreshModeLabel()
+				addMessage("Dex", ("Switched to %s."):format(assistantMode == "llm" and "LLM AI" or "Explorer AI"), Color3.fromRGB(45, 45, 45))
+			end)
+			endpointButton.MouseButton1Click:Connect(function()
+				addMessage("Dex", 'Set endpoint with "/endpoint https://...". Current: ' .. llmEndpoint, Color3.fromRGB(45, 45, 45))
+			end)
+			modelBox.FocusLost:Connect(function()
+				llmModel = trim(modelBox.Text)
+				if llmModel == "" then llmModel = "gpt-4.1-mini" modelBox.Text = llmModel end
+				if Settings.Assistant then
+					Settings.Assistant.LLMModel = llmModel
+				end
+			end)
+			apiKeyBox.FocusLost:Connect(function()
+				llmApiKey = trim(apiKeyBox.Text)
+			end)
+
 			sendButton.MouseButton1Click:Connect(handlePrompt)
 			inputBox.FocusLost:Connect(function(enterPressed)
 				if enterPressed then
@@ -13676,7 +13919,7 @@ Main = (function()
 				end
 			end)
 
-			addMessage("Dex", 'Explorer-focused assistant ready. I can chat a bit, find names, find visible text like "sell loot", search script source, and explain the selected script.', Color3.fromRGB(45, 45, 45))
+			addMessage("Dex", ('Assistant ready. Mode options: Explorer AI or LLM AI. Current model: %s. Use "/mode llm" and set API key to chat with the LLM.'):format(llmModel), Color3.fromRGB(45, 45, 45))
 			return window
 		end
 
